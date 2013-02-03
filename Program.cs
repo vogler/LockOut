@@ -30,11 +30,6 @@ namespace LockOut
         [DllImport("user32.dll")]
         public static extern void LockWorkStation();
 
-        static string GetStringForSSID(Wlan.Dot11Ssid ssid)
-        {
-            return Encoding.ASCII.GetString(ssid.SSID, 0, (int)ssid.SSIDLength);
-        }
-
         static void PowerModeChanged(Object sender, PowerModeChangedEventArgs e)
         {
             if (e.Mode == PowerModes.Suspend)
@@ -44,6 +39,8 @@ namespace LockOut
             if (e.Mode == PowerModes.Resume)
             {
                 Console.WriteLine("PowerMode: resume");
+                // give it some time to connect. wasn't necessary for me, but might be for some configurations. adjust if needed.
+                System.Threading.Thread.Sleep(500);
                 var connectedSsids = new List<string>();
                 foreach (WlanClient.WlanInterface wlanInterface in wlan.Interfaces)
                 {
